@@ -1,0 +1,108 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class MergeSort {
+	
+//mergesort
+	public static int[] mergesort(int[] input) {
+		int n = input.length;
+		
+    if (n <= 1) return input;
+		  int[] x = new int[n/2];
+		  int[] y = new int[n - n/2];
+		  
+      for (int i = 0; i < x.length; i++)
+		    x[i] = input[i];
+		  
+      for (int i = 0; i < y.length; i++)
+		    y[i] = input[i + n/2];
+		  return merge(mergesort(x), mergesort(y));
+		}
+
+	private static int[] merge(int[] x, int[] y) {
+		int[] z = new int[x.length + y.length];
+		int i = 0, j = 0;
+		
+    for (int k = 0; k < z.length; k++) {
+		  if (i >= x.length) z[k] = y[j++];
+		
+    else if (j >= y.length) z[k] = x[i++];
+		
+    else if (x[i] <= y[j]) z[k] = x[i++];
+		
+    else z[k] = y[j++];}
+		return z;}
+		
+//binary (sorted first)   
+  public static boolean binarysearch(int[] inputArray, int key) {
+    int start = 0;
+    int end = inputArray.length - 1;
+    
+    while (start <= end) {
+      int middle = (start + end) / 2;
+      if (key == inputArray[middle]) {
+         return true;}
+    
+    if (key < inputArray[middle]) {
+      end = middle - 1;} 
+    
+    else {start = middle + 1;}}
+    return false;}
+  
+//sequential
+    public static boolean sequentialsearch(int[] array, int key){
+    int size = array.length;
+    
+    for(int i=0;i<size;i++){
+        if(array[i] == key){
+            return true;}}
+    return false;}
+
+//main method
+   public static void main(String[] args) {
+       Scanner scan = new Scanner(System.in); //reads in file
+       String line = scan.nextLine();
+       String[] size = line.split("\\s+"); //splits by space
+
+       int data[] = new int[Integer.parseInt(size[0])]; //make 2 arrays, data & query
+       int query[] = new int[Integer.parseInt(size[1])];
+       
+       for(int i=0;i<data.length; i++){ //read into data array
+           data[i] = scan.nextInt(); }
+
+       for(int i=0; i<query.length; i++){  //read into query array
+           query[i] = scan.nextInt();}
+
+       int d_copy[] = Arrays.copyOf(data, data.length);
+       mergesort(d_copy);
+
+       long s, e;
+       s = System.currentTimeMillis();
+       int[] status = mergesort(data);
+       e = System.currentTimeMillis();
+
+       long prep_time = (e - s);
+       
+       System.out.println("Prep time: "+ prep_time + "ms"); 
+
+       long start, end;
+       // searching each query element
+
+       for(int i=0; i<query.length; i++){
+           start = System.currentTimeMillis();
+           boolean status1 = sequentialsearch(data, query[i]);
+           end = System.currentTimeMillis();
+           long seq_time = (end - start);
+           
+           start = System.currentTimeMillis();
+           boolean status2 = binarysearch(d_copy, query[i]);
+           end = System.currentTimeMillis();
+           long binary_time = (end - start);
+    
+           System.out.println(query[i]+" "+status1+":"+seq_time+ "ms " +status2+":"+binary_time+ "ms");    
+           
+           scan.close();
+           
+       }
+   }
+}
